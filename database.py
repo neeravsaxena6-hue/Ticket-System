@@ -13,16 +13,7 @@ if not DATABASE_URL:
         "DATA_BASE is missing. Add it to your .env file."
     )
 
-connect_args = (
-    {"check_same_thread": False}
-    if DATABASE_URL.startswith("sqlite")
-    else {}
-)
-
-engine = create_engine(
-    DATABASE_URL,
-    connect_args=connect_args
-)
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
     bind=engine,

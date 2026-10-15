@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "bcrypt==4.0.1",
     "fastapi>=0.141.1",
     "passlib[bcrypt]>=1.7.4",
     "psycopg[binary]>=3.3.6",
@@ -23,3 +24,9 @@ new-ticket-sys = "new_ticket_sys:main"
 [build-system]
 requires = ["uv_build>=0.12.8,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "types-passlib>=1.7.7.20260211",
+    "types-python-jose>=3.5.0.20260408",
+]

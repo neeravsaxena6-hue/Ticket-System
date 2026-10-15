@@ -1,7 +1,7 @@
-
 import os
 from datetime import datetime, timedelta, timezone
 
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
@@ -12,10 +12,15 @@ from database import get_db
 from models import User
 
 
+load_dotenv()
+
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
 if not SECRET_KEY:
-    raise RuntimeError("JWT_SECRET_KEY is missing from .env")
+    raise RuntimeError(
+        "JWT_SECRET_KEY is missing from .env. "
+        "Check that .env exists in your project folder."
+    )
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 30
@@ -105,7 +110,7 @@ def require_employee(
 
     if current_user.role != "employee":
         raise HTTPException(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Employee access required"
         )
 
@@ -118,7 +123,7 @@ def require_manager(
 
     if current_user.role != "manager":
         raise HTTPException(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="IT Manager access required"
         )
 
@@ -131,7 +136,7 @@ def require_it_head(
 
     if current_user.role != "it_head":
         raise HTTPException(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="IT Head access required"
         )
 
