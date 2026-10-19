@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -8,19 +9,18 @@ from controllers import (
     create_ticket,
     get_my_tickets,
     get_ticket_by_id,
-    get_manager_tickets,
+    get_all_tickets_for_it_head,
+    get_pending_tickets_for_it_head,
     accept_ticket,
     reject_ticket,
     get_escalated_tickets,
 )
-
 from auth import (
     get_current_user,
     require_employee,
     require_manager,
     require_it_head,
 )
-
 from database import get_db
 from models import User
 from pydantic_model import Signup, Login, TicketCreate, TicketReject
@@ -28,8 +28,10 @@ from pydantic_model import Signup, Login, TicketCreate, TicketReject
 router = APIRouter()
 
 
+# ---------------- AUTH ----------------
+
 @router.post("/auth/signup")
-async def signup_d(
+def signup_route(
     data: Signup,
     db: Session = Depends(get_db),
 ):
@@ -37,7 +39,7 @@ async def signup_d(
 
 
 @router.post("/auth/login")
-async def login(
+def login_route(
     data: Login,
     db: Session = Depends(get_db),
 ):
@@ -45,14 +47,16 @@ async def login(
 
 
 @router.get("/auth/me")
-async def get_current_user_details(
+def get_current_user_details(
     current_user: User = Depends(get_current_user),
 ):
     return get_me(current_user)
 
 
+# ---------------- EMPLOYEE ----------------
+
 @router.post("/tickets")
-async def create_t(
+def create_ticket_route(
     data: TicketCreate,
     current_user: User = Depends(require_employee),
     db: Session = Depends(get_db),
@@ -61,7 +65,7 @@ async def create_t(
 
 
 @router.get("/tickets/my")
-async def get_my(
+def get_my_tickets_route(
     current_user: User = Depends(require_employee),
     db: Session = Depends(get_db),
 ):
@@ -69,7 +73,7 @@ async def get_my(
 
 
 @router.get("/tickets/{ticket_id}")
-async def get_by_id(
+def get_ticket_route(
     ticket_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -77,36 +81,48 @@ async def get_by_id(
     return get_ticket_by_id(ticket_id, current_user, db)
 
 
-@router.get("/manager/tickets")
-async def get_tickets(
-    current_user: User = Depends(require_manager),
+# ---------------- IT HEAD ----------------
+
+@router.get("/it-head/tickets")
+def get_all_tickets_route(
+    current_user: User = Depends(require_it_head),
     db: Session = Depends(get_db),
 ):
-    return get_manager_tickets(current_user, db)
+    return get_all_tickets_for_it_head(current_user, db)
 
 
-@router.patch("/manager/tickets/{ticket_id}/accept")
-async def accept(
+@router.get("/it-head/tickets/pending")
+def get_pending_tickets_route(
+    current_user: User = Depends(require_it_head),
+    db: Session = Depends(get_db),
+):
+    return get_pending_tickets_for_it_head(current_user, db)
+
+
+@router.patch("/it-head/tickets/{ticket_id}/accept")
+def accept_ticket_route(
     ticket_id: int,
-    current_user: User = Depends(require_manager),
+    current_user: User = Depends(require_it_head),
     db: Session = Depends(get_db),
 ):
     return accept_ticket(ticket_id, current_user, db)
 
 
-@router.patch("/manager/tickets/{ticket_id}/reject")
-async def reject(
+@router.patch("/it-head/tickets/{ticket_id}/reject")
+def reject_ticket_route(
     ticket_id: int,
     data: TicketReject,
-    current_user: User = Depends(require_manager),
+    current_user: User = Depends(require_it_head),
     db: Session = Depends(get_db),
 ):
     return reject_ticket(ticket_id, data, current_user, db)
 
 
-@router.get("/it-head/tickets/escalated")
-async def get_escalated(
-    current_user: User = Depends(require_it_head),
+# ---------------- MANAGER ----------------
+
+@router.get("/manager/tickets/escalated")
+def get_escalated_tickets_route(
+    current_user: User = Depends(require_manager),
     db: Session = Depends(get_db),
 ):
     return get_escalated_tickets(current_user, db)

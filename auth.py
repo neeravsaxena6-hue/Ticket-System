@@ -1,3 +1,4 @@
+
 import os
 from datetime import datetime, timedelta, timezone
 
@@ -108,7 +109,9 @@ def require_employee(
     current_user: User = Depends(get_current_user)
 ) -> User:
 
-    if current_user.role != "employee":
+    role = (current_user.role or "").strip().lower()
+
+    if role != "employee":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Employee access required"
@@ -121,7 +124,9 @@ def require_manager(
     current_user: User = Depends(get_current_user)
 ) -> User:
 
-    if current_user.role != "manager":
+    role = (current_user.role or "").strip().lower()
+
+    if role != "manager":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="IT Manager access required"
@@ -134,7 +139,9 @@ def require_it_head(
     current_user: User = Depends(get_current_user)
 ) -> User:
 
-    if current_user.role != "it_head":
+    role = (current_user.role or "").strip().lower()
+
+    if role != "it_head":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="IT Head access required"
