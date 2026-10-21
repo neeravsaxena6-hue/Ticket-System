@@ -1,0 +1,32 @@
+[project]
+name = "new-ticket-sys"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "neerav saxena", email = "neeravsaxena6@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "bcrypt==4.0.1",
+    "fastapi>=0.141.1",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg[binary]>=3.3.6",
+    "python-dotenv>=1.2.3",
+    "python-jose[cryptography]>=3.5.0",
+    "sqlalchemy>=2.1.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+new-ticket-sys = "new_ticket_sys:main"
+
+[build-system]
+requires = ["uv_build>=0.12.8,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "types-passlib>=1.7.7.20260211",
+    "types-python-jose>=3.5.0.20260408",
+]
