@@ -18,8 +18,7 @@ dependencies = [
     "uvicorn[standard]>=0.54.0",
 ]
 
-[project.scripts]
-new-ticket-sys = "new_ticket_sys:main"
+
 
 [build-system]
 requires = ["uv_build>=0.12.8,<0.13.0"]
@@ -30,3 +29,5 @@ dev = [
     "types-passlib>=1.7.7.20260211",
     "types-python-jose>=3.5.0.20260408",
 ]
+[tool.uv]
+package = false

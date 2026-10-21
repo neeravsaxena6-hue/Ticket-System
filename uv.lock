@@ -254,7 +254,7 @@ wheels = [
 [[package]]
 name = "new-ticket-sys"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "bcrypt" },
     { name = "fastapi" },
